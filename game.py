@@ -8,6 +8,7 @@ class Winner(enum.Enum):
     FIRST = 1
     PASSIVE = 2
 
+
 class Action(tp.Protocol):
     def __eq__(self, other: Action) -> bool: ...
     def __hash__(self) -> int: ...
