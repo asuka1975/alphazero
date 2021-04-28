@@ -122,6 +122,8 @@ class Othello:
         return o
 
     def actions(self):
+        if self.finished():
+            return []
         puttables = self.puttables()
         return self.puttables() if len(puttables) > 0 else [True]
     
@@ -129,7 +131,7 @@ class Othello:
         return len(self.puttables()) == 0 and self.skip_flag
 
     def winner(self):
-        return game.PASSIVE if self.board.count(WHITE) > self.board.count(BLACK) else (game.FIRST if self.board.count(WHITE) < self.board.count(BLACK) else game.DRAW)
+        return game.Winner.PASSIVE if self.board.count(WHITE) > self.board.count(BLACK) else (game.Winner.FIRST if self.board.count(WHITE) < self.board.count(BLACK) else game.Winner.DRAW)
 
 
 
