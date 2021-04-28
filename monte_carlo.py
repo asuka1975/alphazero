@@ -7,6 +7,9 @@ import numpy as np
 
 import game
 
+def default_cost(cp):
+    return lambda node, action: cp * math.sqrt(2 * math.log(node.n_s)) / node.children[action].n_s
+
 class Node:
     def __init__(self, board: game.Game):
         self.n_s = 0
@@ -24,7 +27,7 @@ class Node:
             m = max(scores)
             max_indices = [i for i, v in enumerate(scores) if v == m]
             index = random.choice(max_indices)
-            action = self.children.keys()[index]
+            action = list(self.children.keys())[index]
         else:
             action = random.choice(unselected)
         self.children[action].n_s += 1
@@ -45,7 +48,9 @@ class MonteCarloTree:
 
     def set_root(self, root: Node) -> None:
         self.root = root
+        self.root.n_s = 1
         self.root.cost_fn = self.cost_fn
+        self.root.expand()
 
     def expand_if(self, node: Node) -> bool:
         return node.n_s >= self.expansion_threshold and len(node.children) == 0
@@ -56,6 +61,7 @@ class MonteCarloTree:
             if self.expand_if(node):
                 node.expand()
             elif not self.expand_if(node) and len(node.children) == 0:
+                self.root.n_s += 1
                 point = self.evaluate(node.value.copy())
                 self.backup(node, point)
                 node = self.root
@@ -78,7 +84,7 @@ class MonteCarloTree:
             node = node.parent
 
     def play(self):
-        node = max(self.root.children, key=lambda n: n.q)
+        node = max(self.root.children.values(), key=lambda n: n.q)
         self.root = node
         self.root.parent = None
         return self.root.value
