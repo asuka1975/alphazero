@@ -3,7 +3,7 @@ from __future__ import annotations
 import typing as tp
 import enum
 
-class Winner(enum.Enum):
+class Winner(enum.IntEnum):
     DRAW = 0
     FIRST = 1
     PASSIVE = 2
